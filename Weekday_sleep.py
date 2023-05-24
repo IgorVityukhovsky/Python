@@ -28,23 +28,26 @@ def check_user_activity(timeout):
     last_activity = time.time()
 
     while True:
-        current_time = time.time()
-        elapsed_time = current_time - last_activity
+        user_idle_time = (win32api.GetTickCount() - win32api.GetLastInputInfo()) / 1000
+        print(user_idle_time)
 
-        if elapsed_time >= timeout:
+        if user_idle_time >= timeout:
             return True
-
-        user_idle_time = (win32api.GetTickCount() - win32api.GetLastInputInfo()) / 1000.0
+        
 
         if user_idle_time < timeout:
-            last_activity = current_time
+            print("sleep time, wait")
+            time.sleep(30)
 
 def main():
-    timeout = 300  # 300 секунд (5 минут) бездействия пользователя
+    timeout = 300 # 300 секунд (5 минут) бездействия пользователя
 
     while True:
         if is_working_hours():
             prevent_sleep()
+            print("Dont sleep")
+            
+
         else:
             if check_user_activity(timeout):
                 hibernate()
